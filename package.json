@@ -5,6 +5,8 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
-    "express": "^4.18.2"
-  }
+    "express": "^4.18.2",
+    "mysql2": "^3.9.1"
+  },
+  "repository": "https://github.com/young970319/postResume.git"
 }
