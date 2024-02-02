@@ -4,9 +4,21 @@
   "main": "index.js",
   "license": "MIT",
   "type": "module",
-  "dependencies": {
-    "express": "^4.18.2",
-    "mysql2": "^3.9.1"
+  "scripts": {
+    "dev": "nodemon app.js"
   },
-  "repository": "https://github.com/young970319/postResume.git"
+  "dependencies": {
+    "@prisma/client": "^5.9.0",
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.4.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.9.1",
+    "prisma": "^5.9.0"
+  },
+  "repository": "https://github.com/young970319/postResume.git",
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  }
 }
