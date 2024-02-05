@@ -82,7 +82,7 @@ router.get('/posts/:postId', async (req, res, next) => {
 
 /** 이력서 삭제 */
 router.delete('/posts/:postId', authMiddleware, async (req, res, next) => {
-    const user = res.locals.user
+    const user = req.user
     const postId = req.params.postId
 
     if (!postId) {
@@ -92,7 +92,7 @@ router.delete('/posts/:postId', authMiddleware, async (req, res, next) => {
         })
     }
 
-    const post = await prisma.resume.findFirst({
+    const post = await prisma.posts.findFirst({
         where: {
             postId: Number(postId),
         },
@@ -105,25 +105,25 @@ router.delete('/posts/:postId', authMiddleware, async (req, res, next) => {
         })
     }
 
-    if (resume.userId !== user.userId) {
+    if (post.userId !== user.userId) {
         return res.status(400).json({
             success: false,
             message: '올바르지 않은 요청입니다.',
         })
     }
 
-    await prisma.post.delete({
+    await prisma.posts.delete({
         where: {
             postId: Number(postId),
         },
     })
 
-    return res.status(201).end()
+    return res.status(201).json({ message: '삭제 완료되었습니다.' })
 })
 
 /** 이력서 수정 */
 router.patch('/posts/:postId', authMiddleware, async (req, res, next) => {
-    const user = res.locals.user
+    const user = req.user
     const postId = req.params.postId
     const { title, content, status } = req.body
 
@@ -155,7 +155,7 @@ router.patch('/posts/:postId', authMiddleware, async (req, res, next) => {
         })
     }
 
-    const post = await prisma.post.findFirst({
+    const post = await prisma.posts.findFirst({
         where: {
             postId: Number(postId),
         },
@@ -168,7 +168,7 @@ router.patch('/posts/:postId', authMiddleware, async (req, res, next) => {
         })
     }
 
-    if (post.postId !== user.userId) {
+    if (post.userId !== user.userId) {
         return res.status(400).json({
             success: false,
             message: '올바르지 않은 요청입니다.',
@@ -176,9 +176,9 @@ router.patch('/posts/:postId', authMiddleware, async (req, res, next) => {
     }
 
     /** 본인이 작성한 이력서임이 확인됨. */
-    await prisma.post.update({
+    await prisma.posts.update({
         where: {
-            posdId: Number(postId),
+            postId: Number(postId),
         },
         data: {
             title,
