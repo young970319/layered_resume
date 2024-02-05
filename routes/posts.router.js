@@ -81,7 +81,45 @@ router.get('/posts/:postId', async (req, res, next) => {
 })
 
 /** 이력서 삭제 */
-router.delete('/posts/:postId', authMiddleware, async (req, res, next) => {})
+router.delete('/posts/:postId', authMiddleware, async (req, res, next) => {
+    const user = res.locals.user
+    const postId = req.params.postId
+
+    if (!postId) {
+        return res.status(400).json({
+            success: false,
+            message: 'postId는 필수값입니다.',
+        })
+    }
+
+    const post = await prisma.resume.findFirst({
+        where: {
+            postId: Number(postId),
+        },
+    })
+
+    if (!post) {
+        return res.status(400).json({
+            success: false,
+            message: '존재하지 않는 이력서 입니다.',
+        })
+    }
+
+    if (resume.userId !== user.userId) {
+        return res.status(400).json({
+            success: false,
+            message: '올바르지 않은 요청입니다.',
+        })
+    }
+
+    await prisma.post.delete({
+        where: {
+            postId: Number(postId),
+        },
+    })
+
+    return res.status(201).end()
+})
 
 /** 이력서 수정 */
 router.patch('/posts/:postId', authMiddleware, async (req, res, next) => {
@@ -151,5 +189,15 @@ router.patch('/posts/:postId', authMiddleware, async (req, res, next) => {
 
     return res.status(201).json({ message: '게시글 수정이 완료되었습니다.' })
 })
+
+/** 강사님 enum 값 안쓰고 String 으로 해결한 코드
+
+if (i['APPLY', 'DROP', 'PASS', 'INTERVIEW1', 'INTERVIEW2', 'FINAL_PASS'].includes(status)){
+    return res.status(400).json({
+        success: false,
+        message: '올바르지 않은 상태값 입니다.',
+    })
+}
+ */
 
 export default router
